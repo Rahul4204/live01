@@ -79,4 +79,12 @@
       </plugins>
     </pluginManagement>
   </build>
+        
+<distributionManagement>
+    <repository>
+      <id>nexus</id>
+      <name>Releases</name>
+      <url>http://13.200.252.186:8081/repository/rahul-repo/</url>
+    </repository>
+  </distributionManagement>
 </project>
