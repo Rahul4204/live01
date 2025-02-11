@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/Rahul4204/live01.git'
+                git branch: 'main', url: 'https://github.com/Rahul4204/live01.git'
             }
         }
 
@@ -25,11 +25,9 @@ pipeline {
 
         stage('Build Artifact') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean install'
             }
         }
-
-        stage('Upload to Nexus') {
    stage('Upload to Nexus') {
     steps {
         nexusArtifactUploader(
