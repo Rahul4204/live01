@@ -4,7 +4,7 @@ pipeline {
     environment {
         SONARQUBE_URL = 'http://172.31.45.10:9000/'  
         NEXUS_URL = 'http://172.31.42.161:8081/'      
-        TOMCAT_URL = 'http://3.110.194.196:8080/'     
+        TOMCAT_URL = 'http://172.31.7.27:8080/'     
         PROJECT_NAME = 'live01'
     }
 
@@ -34,10 +34,10 @@ pipeline {
             nexusVersion: 'nexus3',
             protocol: 'http',
             nexusUrl: "$NEXUS_URL",
-            repository: 'rahul-repo',
+            repository: 'maven-releases',
             credentialsId: 'nexus-credentials',
-            groupId: 'com.example',
-            version: '1.0.0',
+            groupId: 'vamsi.maven.com',
+            version: '2.0',
             artifacts: [
                 [
                     artifactId: 'live01',
