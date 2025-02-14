@@ -6,7 +6,7 @@
   <groupId>vamsi.maven.com</groupId>
   <artifactId>vamsi</artifactId>
   <packaging>war</packaging>
-  <version>1.0</version>
+  <version>2.0</version>
   <name>Bristleback Webapp archetype</name>
   <url>http://maven.apache.org</url>
 
@@ -85,15 +85,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
-    <repository>
-      <id>nexus</id>
-      <url>http://your-nexus-server:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>nexus</id>
-      <url>http://your-nexus-server:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
