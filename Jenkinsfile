@@ -1,70 +1,36 @@
 pipeline {
-    agent any
-
-    environment {
-        SONARQUBE_URL = 'http://172.31.45.10:9000/'  
-        NEXUS_URL = 'http://172.31.42.161:8081/'      
-        TOMCAT_URL = 'http://172.31.7.27:8080/'     
-        PROJECT_NAME = 'live01'
+    agent {
+        label 'dev'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('git') {
             steps {
                 git branch: 'main', url: 'https://github.com/Rahul4204/live01.git'
             }
         }
-
-        stage('Code Quality Check') {
-            steps {
-                script {
-                    sh 'sonar-scanner -Dsonar.projectKey=live01 -Dsonar.host.url=$SONARQUBE_URL'
-                }
-            }
-        }
-
-        stage('Build Artifact') {
+        stage('maven') {
             steps {
                 sh 'mvn clean install'
             }
         }
-   stage('Upload to Nexus') {
-    steps {
-        nexusArtifactUploader(
-            nexusVersion: 'nexus3',
-            protocol: 'http',
-            nexusUrl: "$NEXUS_URL",
-            repository: 'maven-releases',
-            credentialsId: 'nexus-credentials',
-            groupId: 'vamsi.maven.com',
-            version: '2.0',
-            artifacts: [
-                [
-                    artifactId: 'live01',
-                    classifier: '',
-                    file: 'target/live01.war',
-                    type: 'war'
-                ]
-            ]
-        )
-    }
-}
-
-
-
-        stage('Deploy to Tomcat') {
+        stage('sonar') {
             steps {
-                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: "$TOMCAT_URL")], war: 'target/live01.war'
+                withSonarQubeEnv(installationName: 'sonarqube', credentialsId: 'sonarpipeline') {
+                    sh 'mvn clean verify sonar:sonar'
+                }
             }
         }
-    }
-
-    post {
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
+         stage('nexus') {
+            steps {
+                nexusArtifactUploader artifacts: [[artifactId: 'vamsi', classifier: '', file: 'target/live.war', type: 'war']], credentialsId: 'nexus', groupId: 'vamsi.maven.com', nexusUrl: '13.233.142.101:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: '2.0'
+            }
+         }
+          stage('tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://15.207.99.211:8080')], contextPath: 'live1', war: '**/*.war'
+            }
+        
+        }    
     }
 }
